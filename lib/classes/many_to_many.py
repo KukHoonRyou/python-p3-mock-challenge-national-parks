@@ -14,6 +14,8 @@ class NationalPark:
     def name(self, name):
         if isinstance (name, str) and not hasattr(self, "name") and 3 <= len(name):
             self._name = name
+        else:
+            raise Exception ("Invalid name value")
 
     def trips(self):
         return [trip for trip in Trip.all if trip.national_park is self]
@@ -37,6 +39,18 @@ class NationalPark:
 
         best_visitor = max(visitor_counts, key=visitor_counts.get)
         return best_visitor
+    
+    @classmethod
+
+    # def most_visited(cls):
+    #     return max(cls.all, key = lambda park: park.total_visits())
+    
+    def most_visited(cls):
+        def get_total_visits(park):
+            return park.total_visits()
+        
+        return max(cls.all, key=get_total_visits)
+
 
 
 class Trip:
@@ -58,6 +72,8 @@ class Trip:
     def start_date(self, start_date):
         if isinstance (start_date, str) and 7 <= len(start_date):
             self._start_date = start_date
+        else:
+            raise Exception ("Invalid start date value")
 
     @property
     def end_date(self):
@@ -67,6 +83,8 @@ class Trip:
     def end_date(self, end_date):
         if isinstance(end_date, str) and 7 <= len(end_date):
             self._end_date = end_date
+        else:
+            raise Exception("Invalid end date value")
 
     @property
     def visitor(self):
@@ -85,6 +103,7 @@ class Trip:
     def national_park(self, national_park):
         if isinstance(national_park, NationalPark):
             self._national_park = national_park
+        
 
 class Visitor:
 
@@ -102,9 +121,11 @@ class Visitor:
     def name(self, name):
         if isinstance(name, str) and 1 <= len(name) <= 15:
             self._name = name
+        else:
+            raise Exception ("Invalid name value")
         
     def trips(self):
-        return [trip for trip in Trip.all if trip.visitor == self]
+        return [trip for trip in Trip.all if trip.visitor is self]
     
     def national_parks(self):
         return list({trip.national_park for trip in self.trips()})
